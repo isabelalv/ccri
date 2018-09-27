@@ -5,50 +5,158 @@
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
 <html>
-	<head>
-		<title>Dimension by HTML5 UP</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="is-preload">
 
-		<!-- Wrapper -->
-			<div id="wrapper">
+<head>
+	<title>CCRi Challenge</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 
-				<!-- Header -->
-					<header id="header">
-						<div class="logo">
-							<span class="icon fa-diamond"></span>
-						</div>
-						<div class="content">
-							<div class="inner">
-								<h1>CCRi Take-Home Challenge</h1>
-								<p>In the space below, enter the distance threshold in the first line, </br>
-									and the dimensions of the matrix in the second line as "(rows, columns)" </br>
-									After that, enter one entry per line in row major order.
-								</p>
-								<textarea rows="10"></textarea>
-							</br>
-								<button>Begin!</button>
-							</div>
-						</div>
-					</header>
+	<script>
+		var rows, cols = 0;
+		var marks = [
+			[]
+		];
 
-				<!-- Footer -->
-					<footer id="footer">
-						<p>Template designed by HTML5 UP and released for free under the Creative Commons license.</p>
-					</footer>
+		function runCode() {
+			//parse into multidimensional array
+			var inputText = document.getElementById("input").value;
+			var inputArray = inputText.split("\n");
+			var numSteps = inputArray[0];
+			var dimText = inputArray[1];
+			getDimensions(dimText.trim());
+			if (inputArray.length != (rows * cols) + 2) {
+				alert("The input format is invalid.");
+			} else {
+				var matrix = [
+					[]
+				];
+				for (var j = 0; j < rows; j++) {
+					matrix[j] = [];
+					marks[j] = [];
+				}
+				var count = 0;
+				for (var j = 0; j < rows; j++) {
+					for (var i = 0; i < cols; i++) {
+						matrix[j][i] = inputArray[count + 2];
+						marks[j][i] = 0;
+						count++;
+					}
+				}
+				process(matrix, numSteps);
+			}
+		}
 
+		function getDimensions(dimText) {
+			var commaIndex = dimText.indexOf(",");
+			var openParen = dimText.indexOf("(");
+			var closeParen = dimText.indexOf(")");
+			rows = dimText.substring(openParen + 1, commaIndex).trim();
+			cols = dimText.substring(commaIndex + 1, closeParen).trim();
+		}
+
+		function process(matrix, steps) {
+			for (var j = 0; j < rows; j++) {
+				for (var i = 0; i < cols; i++) {
+					if (matrix[j][i] > 0) {
+						markAround(j, i, steps-1);
+					}
+				}
+			}
+
+			//count marks
+			var markCount = 0;
+			for (var j = 0; j < rows; j++) {
+				for (var i = 0; i < cols; i++) {
+					if (marks[j][i] == 1) {
+						markCount++;
+					}
+				}
+			}
+			alert(matrix);
+			alert(marks);
+			alert("The number of cells within " + steps + " steps of a positive cell is " + markCount);
+		}
+
+		function markAround(row, col, steps) {
+			if (steps > 0) {
+				marks[row][col] = 1;
+			}
+			if (row < rows - 1) {
+				marks[row + 1][col] = 1;
+				if (steps > 0) {
+					markAround(row + 1, col, steps - 1);
+				} else {
+					return;
+				}
+			}
+			if (col < cols - 1) {
+				marks[row][col + 1] = 1;
+				if (steps > 0) {
+					markAround(row, col + 1, steps - 1);
+				} else {
+					return;
+				}
+			}
+			if (row > 0) {
+				marks[row - 1][col] = 1;
+				if (steps > 0) {
+					markAround(row - 1, col, steps - 1);
+				} else {
+					return;
+				}
+			}
+			if (col > 0) {
+				marks[row][col - 1] = 1;
+				if (steps > 0) {
+					markAround(row, col - 1, steps - 1);
+				} else {
+					return;
+				}
+			}
+		}
+	</script>
+</head>
+
+<body class="is-preload">
+
+	<!-- Wrapper -->
+	<div id="wrapper">
+
+		<!-- Header -->
+		<header id="header">
+			<div class="logo">
+				<span class="icon fa-diamond"></span>
 			</div>
+			<div class="content">
+				<div class="inner">
+					<h1>CCRi Take-Home Challenge</h1>
+					<p>In the space below, enter the distance threshold in the first line, </br>
+						and the dimensions of the matrix in the second line as "(rows,columns)" </br>
+						After that, enter one entry per line in row major order.
+					</p>
+					<textarea id="input" rows="10"></textarea>
+					</br>
+					<input id="begin" type="button" value="Begin!" onclick="runCode();" />
+				</div>
+			</div>
+		</header>
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+		<!-- Footer -->
+		<footer id="footer">
+			<p>Template designed by HTML5 UP and released for free under the Creative Commons license.</p>
+		</footer>
 
-	</body>
+	</div>
+
+	<!-- Scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+
+</body>
+
 </html>
