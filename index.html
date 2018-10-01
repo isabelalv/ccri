@@ -57,10 +57,12 @@
 		}
 
 		function process(matrix, steps) {
+			alert(rows);
+			alert(cols);
 			for (var j = 0; j < rows; j++) {
 				for (var i = 0; i < cols; i++) {
 					if (matrix[j][i] > 0) {
-						markAround(j, i, steps-1);
+						markAround(j, i, steps);
 					}
 				}
 			}
@@ -82,37 +84,38 @@
 		function markAround(row, col, steps) {
 			if (steps > 0) {
 				marks[row][col] = 1;
-			}
-			if (row < rows - 1) {
-				marks[row + 1][col] = 1;
-				if (steps > 0) {
-					markAround(row + 1, col, steps - 1);
-				} else {
-					return;
+
+				if (row < rows - 1) {
+					marks[row + 1][col] = 1;
+					if (steps > 0) {
+						markAround(row + 1, col, steps - 1);
+					} else {
+						return;
+					}
 				}
-			}
-			if (col < cols - 1) {
-				marks[row][col + 1] = 1;
-				if (steps > 0) {
-					markAround(row, col + 1, steps - 1);
-				} else {
-					return;
+				if (col < cols - 1) {
+					marks[row][col + 1] = 1;
+					if (steps > 0) {
+						markAround(row, col + 1, steps - 1);
+					} else {
+						return;
+					}
 				}
-			}
-			if (row > 0) {
-				marks[row - 1][col] = 1;
-				if (steps > 0) {
-					markAround(row - 1, col, steps - 1);
-				} else {
-					return;
+				if (row > 0) {
+					marks[row - 1][col] = 1;
+					if (steps > 0) {
+						markAround(row - 1, col, steps - 1);
+					} else {
+						return;
+					}
 				}
-			}
-			if (col > 0) {
-				marks[row][col - 1] = 1;
-				if (steps > 0) {
-					markAround(row, col - 1, steps - 1);
-				} else {
-					return;
+				if (col > 0) {
+					marks[row][col - 1] = 1;
+					if (steps > 0) {
+						markAround(row, col - 1, steps - 1);
+					} else {
+						return;
+					}
 				}
 			}
 		}
